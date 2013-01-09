@@ -1,0 +1,8 @@
+jenkins:
+add notification plugin
+enable udp notifications
+sudo easy_install pyusb
+brew install libusb
+change jenkins host in retaliation.py
+add to command_sets
+python retaliation.py stalk (plug in launcher & speaker)

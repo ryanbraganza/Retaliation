@@ -71,6 +71,7 @@
 #
 ############################################################################
 
+import os
 import sys
 import platform
 import time
@@ -129,7 +130,7 @@ JENKINS_NOTIFICATION_UDP_PORT   = 22222
 # The URL of your Jenkins server - used to callback to determine who broke 
 # the build.
 #
-JENKINS_SERVER                  = "http://192.168.1.100:23456"
+JENKINS_SERVER                  = "http://localhost:8080"
 
 ##########################  ENG CONFIG  #########################
 
@@ -165,6 +166,9 @@ def usage():
     print "                  retalition.py 'chris'"
     print "             to test targeting of chris as defined in your command set."
     print ""
+
+def say(string):
+    os.system("say -v Zarvox %s" % string)
 
 
 def setup_usb():
@@ -235,11 +239,13 @@ def jenkins_target_user(user):
     for key in COMMAND_SETS:
         if key.lower() == user.lower():
             # We have a command set that targets our user so got for it!
+            say("%s broke the build" % key)
             run_command_set(COMMAND_SETS[key])
             match = True
             break
     if not match:
         print "WARNING: No target command set defined for user %s" % user
+        say("I don't know who broke the build")
 
 
 def jenkins_get_responsible_user(job_name):
@@ -295,6 +301,10 @@ def main(args):
         print "Listening and waiting for Jenkins failed build events..."
         jenkins_wait_for_event()
         # Will never return
+        return
+    elif args[1] == 'list':
+        print 'known users'
+        print '\n'.join(COMMAND_SETS.keys())
         return
 
     # Process any passed commands or command_sets
